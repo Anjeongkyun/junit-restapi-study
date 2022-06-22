@@ -1,8 +1,11 @@
 package com.junit.study.springcalculator.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junit.study.springcalculator.component.Calculator;
 import com.junit.study.springcalculator.component.DollarCalculator;
 import com.junit.study.springcalculator.component.MarketApi;
+import com.junit.study.springcalculator.dto.Request;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -12,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebM
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -45,6 +49,29 @@ public class CalculatorApiControllerTest {
         ).andExpect(
                 MockMvcResultMatchers.content().string("60000")
         ).andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    public void minusTest() throws Exception {
+
+        Request req= new Request();
+        req.setX(10);
+        req.setY(10);
+
+        String json = new ObjectMapper().writeValueAsString(req);
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("http://localhost:8080/api/minus")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(json)
+                ).andExpect(
+                        MockMvcResultMatchers.status().isOk()
+                ).andExpect(
+                        MockMvcResultMatchers.jsonPath("$.result").value("0")
+                ).andExpect(
+                        MockMvcResultMatchers.jsonPath("$.response.resultCode").value("Ok")
+                )
+                .andDo(MockMvcResultHandlers.print());
 
     }
 }

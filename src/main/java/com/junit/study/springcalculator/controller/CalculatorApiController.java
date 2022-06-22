@@ -1,11 +1,10 @@
 package com.junit.study.springcalculator.controller;
 
 import com.junit.study.springcalculator.component.Calculator;
+import com.junit.study.springcalculator.dto.Request;
+import com.junit.study.springcalculator.dto.Response;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,9 +19,14 @@ public class CalculatorApiController {
         return calculator.sum(x,y);
     }
 
-    @GetMapping("/minus")
-    public int minus(@RequestParam int x, @RequestParam int y){
+    @PostMapping("/minus")
+    public Response minus(@RequestBody Request req){
 
-        return calculator.minus(x,y);
+        int minusResult = calculator.minus(req.getX(), req.getY());
+
+        Response res = new Response();
+        res.setResult(minusResult);
+        res.setResponse(new Response.Body());
+        return res;
     }
 }
